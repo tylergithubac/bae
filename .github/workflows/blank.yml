@@ -1,4 +1,4 @@
-name: Cl
+name: CI2
 
 on: [push, workflow_dispatch]
 
@@ -28,4 +28,21 @@ jobs:
     - run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "P@ssw0rd!" -Force)
 
     - name: Create Tunnel
-      run: .\ngrok\ngrok.exe tcp 3389
+      run: |
+        $retryCount = 0
+        $maxRetries = 3
+
+        while ($retryCount -lt $maxRetries) {
+          try {
+            .\ngrok\ngrok.exe tcp 3389
+            break  # Exit the loop if ngrok succeeds
+          } catch {
+            Write-Host "Ngrok failed. Retrying..."
+            $retryCount++
+          }
+        }
+
+        if ($retryCount -eq $maxRetries) {
+          Write-Error "Failed to create ngrok tunnel after $maxRetries attempts."
+          exit 1  # Exit the job with an error status
+        }
