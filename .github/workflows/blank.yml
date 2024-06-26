@@ -1,4 +1,4 @@
-name: CI2
+name: CI
 
 on: [push, workflow_dispatch]
 
@@ -8,7 +8,7 @@ jobs:
     steps:
     - name: Download ngrok
       run: |
-        Invoke-WebRequest https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-windows-amd64.zip -OutFile ngrok.zip
+        Invoke-WebRequest https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-windows-amd64.zip -OutFile ngrok.zip
 
     - name: Extract ngrok
       run: Expand-Archive ngrok.zip
@@ -28,21 +28,4 @@ jobs:
     - run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "P@ssw0rd!" -Force)
 
     - name: Create Tunnel
-      run: |
-        $retryCount = 0
-        $maxRetries = 3
-
-        while ($retryCount -lt $maxRetries) {
-          try {
-            .\ngrok\ngrok.exe tcp 3389
-            break  # Exit the loop if ngrok succeeds
-          } catch {
-            Write-Host "Ngrok failed. Retrying..."
-            $retryCount++
-          }
-        }
-
-        if ($retryCount -eq $maxRetries) {
-          Write-Error "Failed to create ngrok tunnel after $maxRetries attempts."
-          exit 1  # Exit the job with an error status
-        }
+      run: .\ngrok\ngrok.exe tcp 3389
