@@ -27,10 +27,6 @@ jobs:
 
     - run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "P@ssw0rd!" -Force)
 
-
-    - name: Extract file to Downloads
-      run: Expand-Archive $Env:USERPROFILE\Downloads\myfile.zip -DestinationPath $Env:USERPROFILE\Downloads
-
     - name: Launch Chrome
       run: Start-Process "C:\Program Files\Google\Chrome\Application\chrome.exe" --disable-features=LockProfileCookieDatabase
 
